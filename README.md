@@ -1,4 +1,4 @@
-# My solutions to [Advent of Code 2024](https://adventofcode.com/2024)
+# My solutions to [Advent of Code 2024](https://adventofcode.com/2024) in Java
 ### About 
 Advent of code is a series of small, self-contained programming puzzles, centered around a theme and with varying difficulty levels. This repository contains my solutions for the 2024 version, written in Java 21.
 
