@@ -13,15 +13,15 @@ public class DayTwo {
 
   public static void solve() {
     List<String> lines = FileParser.toLines("src/main/resources/DayTwo/input.txt");
-    long counter = lines.stream().map(DayTwo::parseToIntList).filter(DayTwo::isSafe).count();
+    List<List<Integer>> parsedLines = lines.stream().map(DayTwo::parseToIntList).toList();
+    long safeCounter = parsedLines.stream().filter(DayTwo::isSafe).count();
     long fixedCounter =
-        lines.stream()
-            .map(DayTwo::parseToIntList)
-            .filter(l -> isSafe(l).equals(false))
+        parsedLines.stream()
+            .filter(l -> !isSafe(l))
             .filter(DayTwo::isFixableByRemovingOneElement)
             .count();
-    LOGGER.info("Part one: {}", counter);
-    LOGGER.info("Part two: {}", counter + fixedCounter);
+    LOGGER.info("Part one: {}", safeCounter);
+    LOGGER.info("Part two: {}", safeCounter + fixedCounter);
   }
 
   public static Boolean isSafe(List<Integer> numbers) {
