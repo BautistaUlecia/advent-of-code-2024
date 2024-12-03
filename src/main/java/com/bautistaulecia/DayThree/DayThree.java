@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 // Honestly not super proud of this one, but it's my first time using regex in Java
-// And it gets the job done (in a performant fashion, too)
+// And it gets the job done
 
 public class DayThree {
   private static final Logger LOGGER = LoggerFactory.getLogger(DayThree.class);
@@ -21,8 +21,6 @@ public class DayThree {
     Pattern doPattern = Pattern.compile("do[()]");
     Pattern dontPattern = Pattern.compile("don't[()]");
     Matcher multPatternMatcher = multPattern.matcher(fileAsString);
-    Matcher doPatternMatcher;
-    Matcher dontPatternMatcher;
 
     boolean matching = true;
     int lastKnownEnd = 0;
@@ -32,28 +30,41 @@ public class DayThree {
     while (multPatternMatcher.find()) {
       // If match for mult is found, search for last occurrence of "do" or "don't" in substring
       // Which will be either 0 to start of mult (first iteration) or lastKnownEnd of mult to
-      // currentStart
+      // currentStart (non-first iteration)
 
       knownEnds.add(multPatternMatcher.end());
       if (i > 0) {
         lastKnownEnd = knownEnds.get(i - 1);
       }
       String sublist = getValidSublist(lastKnownEnd, multPatternMatcher.start(), fileAsString);
-      doPatternMatcher = doPattern.matcher(sublist);
-      dontPatternMatcher = dontPattern.matcher(sublist);
-      if (doPatternMatcher.find()) {
+
+      Matcher doMatcher = doPattern.matcher(sublist);
+      Matcher dontMatcher = dontPattern.matcher(sublist);
+
+      int lastDoIndex = -1;
+      int lastDontIndex = -1;
+
+      while (doMatcher.find()) {
+        lastDoIndex = doMatcher.start();
+      }
+
+      while (dontMatcher.find()) {
+        lastDontIndex = dontMatcher.start();
+      }
+
+      if (lastDontIndex > lastDoIndex) {
+        matching = false;
+      } else if (lastDoIndex > lastDontIndex) {
         matching = true;
       }
-      if (dontPatternMatcher.find()) {
-        matching = false; // use this line for part two
-        // matching = true; //  <= use this line for part one, since do and don't are ignored
-      }
+
+      // Comment this if for part one (since all mult should be considered)
       if (matching) {
         matches.add(multPatternMatcher.group());
       }
       i++;
     }
-    LOGGER.info("Part two: {}", calculateValueFromMatches(matches));
+    LOGGER.info("Solution: {}", calculateValueFromMatches(matches));
     calculateValueFromMatches(matches);
   }
 
