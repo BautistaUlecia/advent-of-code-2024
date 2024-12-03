@@ -8,8 +8,10 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// Honestly not super proud of this one, but it's my first time using regex in Java
-// And it gets the job done
+/* Honestly not super proud of this one, but it's my first time using regex in Java,
+and it gets the job done. Also, I realized (not while solving) that lastIndexOf() exists,
+which could remove like 30 lines of code, but to stay true to the spirit of the challenge,
+I will leave my implementation as is. */
 
 public class DayThree {
   private static final Logger LOGGER = LoggerFactory.getLogger(DayThree.class);
