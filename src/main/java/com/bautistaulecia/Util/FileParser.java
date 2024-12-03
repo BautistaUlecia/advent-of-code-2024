@@ -13,4 +13,12 @@ public class FileParser {
       throw new RuntimeException(e);
     }
   }
+
+  public static String toSingleString(String path) {
+    try {
+      return Files.readString(Paths.get(path));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
 }

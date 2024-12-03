@@ -1,11 +1,11 @@
 package com.bautistaulecia;
 
-import com.bautistaulecia.DayOne.DayOne;
-import com.bautistaulecia.DayTwo.DayTwo;
+import com.bautistaulecia.DayThree.DayThree;
 
 public class App {
   public static void main(String[] args) {
-    DayOne.solve();
-    DayTwo.solve();
+    // DayOne.solve();
+    // DayTwo.solve();
+    DayThree.solve();
   }
 }
