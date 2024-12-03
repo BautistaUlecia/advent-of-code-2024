@@ -57,16 +57,17 @@ public class DayThree {
     calculateValueFromMatches(matches);
   }
 
-    private static int calculateValueFromMatches(List<String> matches) {
-        return matches.stream()
-                .mapToInt(match -> {
-                    String[] numbers = match.replaceAll("[^0-9,]", "").split(",");
-                    int first = Integer.parseInt(numbers[0]);
-                    int second = Integer.parseInt(numbers[1]);
-                    return first * second;
-                })
-                .sum();
-    }
+  private static int calculateValueFromMatches(List<String> matches) {
+    return matches.stream()
+        .mapToInt(
+            match -> {
+              String[] numbers = match.replaceAll("[^0-9,]", "").split(",");
+              int first = Integer.parseInt(numbers[0]);
+              int second = Integer.parseInt(numbers[1]);
+              return first * second;
+            })
+        .sum();
+  }
 
   public static String getValidSublist(int lastKnownEnd, int currentStart, String input) {
     return input.substring(lastKnownEnd, currentStart);
