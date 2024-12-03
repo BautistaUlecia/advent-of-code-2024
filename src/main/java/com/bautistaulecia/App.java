@@ -5,7 +5,7 @@ import com.bautistaulecia.DayTwo.DayTwo;
 
 public class App {
   public static void main(String[] args) {
-    // DayOne.solve();
+    DayOne.solve();
     DayTwo.solve();
   }
 }

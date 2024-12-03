@@ -4,8 +4,11 @@ import com.bautistaulecia.Util.FileParser;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DayOne {
+  private static final Logger LOGGER = LoggerFactory.getLogger(DayOne.class);
 
   public static void solve() {
     List<String> lines = FileParser.toLines("src/main/resources/DayOne/input.txt");
@@ -26,12 +29,13 @@ public class DayOne {
     for (int i = 0; i < left.size(); i++) {
       distances.add(Math.abs(left.get(i) - right.get(i)));
     }
-    System.out.println("Part one: ");
-    System.out.println(distances.stream().mapToInt(Integer::intValue).sum());
+    int partOne = distances.stream().mapToInt(Integer::intValue).sum();
+    LOGGER.info("Part one: {}", partOne);
 
-    System.out.println("Part two: ");
+    // Part two
     List<Integer> similarityScores =
         left.stream().map(l -> l * Collections.frequency(right, l)).toList();
-    System.out.println(similarityScores.stream().mapToInt(Integer::intValue).sum());
+    int partTwo = similarityScores.stream().mapToInt(Integer::intValue).sum();
+    LOGGER.info("Part two: {}", partTwo);
   }
 }
