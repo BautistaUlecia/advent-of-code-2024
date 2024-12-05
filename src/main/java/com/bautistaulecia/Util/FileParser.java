@@ -21,4 +21,18 @@ public class FileParser {
       throw new RuntimeException(e);
     }
   }
+
+  public static char[][] toMatrix(String path) {
+    try {
+      List<String> lines = Files.readAllLines(Paths.get(path));
+      int size = lines.size(); // Matrix is square
+      char[][] matrix = new char[size][size];
+      for (int i = 0; i < size; i++) {
+        matrix[i] = lines.get(i).toCharArray();
+      }
+      return matrix;
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
 }
