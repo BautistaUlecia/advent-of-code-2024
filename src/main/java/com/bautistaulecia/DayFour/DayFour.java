@@ -8,11 +8,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// Me paro en 00
-// Busco izq der, der izq
-// Arriba abajo, abajo arriba
-// diagonales ida vuelta
-// Lo agrego a "seen", si mi actual esta en seen saltear
+// Could probably handle 'seen' logic inside the valid lines logic
+// to add a bit of speed, but it's optimized enough I think
 
 public class DayFour {
   private static final Set<Line> seen = new HashSet<Line>();
@@ -23,18 +20,15 @@ public class DayFour {
     char[][] inputAsMatrix = FileParser.toMatrix("src/main/resources/DayFour/input.txt");
     for (int i = 0; i < inputAsMatrix.length; i++) {
       for (int j = 0; j < inputAsMatrix.length; j++) {
-        counter += searchInAllDirections(new Coordinate(i, j), inputAsMatrix);
+        counter += searchInAllValidUnseenLines(new Coordinate(i, j), inputAsMatrix);
       }
     }
     LOGGER.info("{}", counter);
   }
 
-  public static int searchInAllDirections(Coordinate position, char[][] matrix) {
+  public static int searchInAllValidUnseenLines(Coordinate position, char[][] matrix) {
     List<Line> validLines = getValidLines(position, matrix);
-    LOGGER.info("Valid lines = {}", validLines);
-    int ocurrences = searchXmas(validLines, matrix);
-    Set<Line> seen = new HashSet<>();
-    return ocurrences;
+    return searchXmas(validLines, matrix);
   }
 
   public static List<Line> getValidLines(Coordinate position, char[][] matrix) {
@@ -85,46 +79,36 @@ public class DayFour {
       Coordinate diagonalThreeDownThreeRight = new Coordinate(position.x() + 3, position.y() + 3);
       directions.add(new Line(position, diagonalThreeDownThreeRight));
     }
-    seen.addAll(directions);
     return directions;
   }
 
   public static int searchXmas(List<Line> validLines, char[][] matrix) {
     int counter = 0;
     for (Line line : validLines) {
-      List<Character> word = new ArrayList<Character>();
-      int currX = line.getFrom().x();
-      int currY = line.getFrom().y();
-      int maxX = line.getTo().x();
-      int maxY = line.getTo().y();
-      LOGGER.info("currx {}, curry {}, maxX {}, maxy{}", currX, currY, maxX, maxY);
-      while (currX != maxX || currY != maxY) {
-        word.add(matrix[currX][currY]);
-        if (currX < maxX) {
-          currX++;
-          LOGGER.info("Incremented curr x");
+      if (seen.add(line)) {
+        List<Character> word = extractWord(line, matrix);
+        if (word.equals(List.of('X', 'M', 'A', 'S')) || word.equals(List.of('S', 'A', 'M', 'X'))) {
+          counter++;
         }
-        if (currX > maxX) {
-          currX--;
-          LOGGER.info("Decremented curr x");
-        }
-
-        if (currY < maxY) {
-          currY++;
-          LOGGER.info("Incremented curr y");
-        }
-        if (currY > maxY) {
-          currY--;
-          LOGGER.info("Decremented curry");
-        }
-      }
-      word.add(matrix[currX][currY]);
-
-      LOGGER.info("WORD = {}", word);
-      if (word.equals(List.of('X', 'M', 'A', 'S')) || word.equals(List.of('S', 'A', 'M', 'X'))) {
-        counter++;
       }
     }
     return counter;
+  }
+  private static List<Character> extractWord(Line line, char[][] matrix) {
+    List<Character> word = new ArrayList<>();
+    int currX = line.getFrom().x();
+    int currY = line.getFrom().y();
+    int maxX = line.getTo().x();
+    int maxY = line.getTo().y();
+
+    while (currX != maxX || currY != maxY) {
+      word.add(matrix[currX][currY]);
+      if (currX < maxX) currX++;
+      if (currX > maxX) currX--;
+      if (currY < maxY) currY++;
+      if (currY > maxY) currY--;
+    }
+    word.add(matrix[currX][currY]);
+    return word;
   }
 }
