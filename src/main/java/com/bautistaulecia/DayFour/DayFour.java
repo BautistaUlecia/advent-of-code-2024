@@ -41,13 +41,15 @@ public class DayFour {
     List<Line> directions = new ArrayList<>();
     // Should search left?
     if (position.x() >= lineSize) {
-      Coordinate positionThreeSquaresToTheLeft = new Coordinate(position.x() - lineSize, position.y());
+      Coordinate positionThreeSquaresToTheLeft =
+          new Coordinate(position.x() - lineSize, position.y());
       directions.add(new Line(position, positionThreeSquaresToTheLeft));
       canSearchLeft = true;
     }
     // Should search right?
     if (position.x() < matrix.length - lineSize) {
-      Coordinate positionThreeSquaresToTheRight = new Coordinate(position.x() + lineSize, position.y());
+      Coordinate positionThreeSquaresToTheRight =
+          new Coordinate(position.x() + lineSize, position.y());
       directions.add(new Line(position, positionThreeSquaresToTheRight));
       canSearchRight = true;
     }
@@ -65,19 +67,23 @@ public class DayFour {
     }
     // Should search diagonals?
     if (canSearchUp && canSearchLeft) {
-      Coordinate diagonalThreeUpThreeLeft = new Coordinate(position.x() - lineSize, position.y() - lineSize);
+      Coordinate diagonalThreeUpThreeLeft =
+          new Coordinate(position.x() - lineSize, position.y() - lineSize);
       directions.add(new Line(position, diagonalThreeUpThreeLeft));
     }
     if (canSearchUp && canSearchRight) {
-      Coordinate diagonalThreeUpThreeRight = new Coordinate(position.x() + lineSize, position.y() - lineSize);
+      Coordinate diagonalThreeUpThreeRight =
+          new Coordinate(position.x() + lineSize, position.y() - lineSize);
       directions.add(new Line(position, diagonalThreeUpThreeRight));
     }
     if (canSearchDown && canSearchLeft) {
-      Coordinate diagonalThreeDownThreeLeft = new Coordinate(position.x() - lineSize, position.y() + lineSize);
+      Coordinate diagonalThreeDownThreeLeft =
+          new Coordinate(position.x() - lineSize, position.y() + lineSize);
       directions.add(new Line(position, diagonalThreeDownThreeLeft));
     }
     if (canSearchDown && canSearchRight) {
-      Coordinate diagonalThreeDownThreeRight = new Coordinate(position.x() + lineSize, position.y() + lineSize);
+      Coordinate diagonalThreeDownThreeRight =
+          new Coordinate(position.x() + lineSize, position.y() + lineSize);
       directions.add(new Line(position, diagonalThreeDownThreeRight));
     }
     return directions;
@@ -96,6 +102,7 @@ public class DayFour {
     }
     return counter;
   }
+
   private static List<Character> extractWord(Line line, char[][] matrix) {
     List<Character> word = new ArrayList<>();
     int currX = line.getFrom().x();
