@@ -8,9 +8,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// Could probably handle 'seen' logic inside the valid lines logic
-// to add a bit of speed, but it's optimized enough I think
-
 public class DayFour {
   private static final Set<Line> seen = new HashSet<Line>();
   private static final Logger LOGGER = LoggerFactory.getLogger(DayFour.class);
@@ -27,9 +24,19 @@ public class DayFour {
   }
 
   public static int searchInAllValidLines(Coordinate position, char[][] matrix) {
-    int lineSize = 3;
-    List<Line> validLines = getValidLines(position, matrix, lineSize);
-    return searchXmas(validLines, matrix);
+    int counter = 0;
+    // int delta = 3; // Part one
+    int delta = 1; // Part two
+
+    List<Line> validLines = getValidLines(position, matrix, delta);
+
+    // counter = searchXmas(validLines, matrix); // Part one
+
+    if (formsXmasCross(validLines, matrix)) {
+      counter++; // Part two
+    }
+
+    return counter;
   }
 
   public static List<Line> getValidLines(Coordinate position, char[][] matrix, int lineSize) {
@@ -90,17 +97,29 @@ public class DayFour {
   }
 
   public static int searchXmas(List<Line> validLines, char[][] matrix) {
-    int counter = 0;
-    for (Line line : validLines) {
-      if (seen.add(line)) {
-        List<Character> word = extractWord(line, matrix);
-        // search 0-1-2-3 and 3-2-1-0 at the same time
-        if (word.equals(List.of('X', 'M', 'A', 'S')) || word.equals(List.of('S', 'A', 'M', 'X'))) {
-          counter++;
-        }
-      }
+    List<Character> XMAS = List.of('X', 'M', 'A', 'S');
+    List<Character> SAMX = List.of('S', 'A', 'M', 'X');
+    return (int)
+        validLines.stream()
+            .filter(seen::add)
+            .map(line -> extractWord(line, matrix))
+            .filter(word -> word.equals(XMAS) || word.equals(SAMX))
+            .count();
+  }
+
+  public static boolean formsXmasCross(List<Line> validLines, char[][] matrix) {
+    List<Character> MAS = List.of('M', 'A', 'S');
+    List<Character> SAM = List.of('S', 'A', 'M');
+    List<Line> diagonals = validLines.stream().filter(Line::isDiagonal).toList();
+    if (diagonals.size() < 4) {
+      // if it does not contain 4 short diagonals, it cannot be a cross, fail fast
+      return false;
     }
-    return counter;
+    List<Line> longDiagonals = concatShortDiagonals(diagonals);
+    return (longDiagonals.stream()
+        .filter(seen::add)
+        .map(line -> extractWord(line, matrix))
+        .allMatch(word -> word.equals(SAM) || word.equals(MAS)));
   }
 
   private static List<Character> extractWord(Line line, char[][] matrix) {
@@ -119,5 +138,21 @@ public class DayFour {
     }
     word.add(matrix[currX][currY]);
     return word;
+  }
+
+  private static List<Line> concatShortDiagonals(List<Line> shortDiagonals) {
+    // 0 is up left, 1 is up right, 2 is down left, 3 is down right
+    Coordinate upLeftToDownRightStart =
+        new Coordinate(shortDiagonals.get(0).to.x(), shortDiagonals.get(0).to.y());
+    Coordinate upLeftToDownRightEnd =
+        new Coordinate(shortDiagonals.get(3).to.x(), shortDiagonals.get(3).to.y());
+    Line upLeftToDownRight = new Line(upLeftToDownRightStart, upLeftToDownRightEnd);
+
+    Coordinate upRightToDownLeftStart =
+        new Coordinate(shortDiagonals.get(1).to.x(), shortDiagonals.get(1).to.y());
+    Coordinate upRightToDownLeftEnd =
+        new Coordinate(shortDiagonals.get(2).to.x(), shortDiagonals.get(2).to.y());
+    Line upRightToDownLeft = new Line(upRightToDownLeftStart, upRightToDownLeftEnd);
+    return List.of(upLeftToDownRight, upRightToDownLeft);
   }
 }
