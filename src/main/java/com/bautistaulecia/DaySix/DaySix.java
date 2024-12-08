@@ -3,14 +3,18 @@ package com.bautistaulecia.DaySix;
 import com.bautistaulecia.Util.Coordinate;
 import com.bautistaulecia.Util.Direction;
 import com.bautistaulecia.Util.FileParser;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DaySix {
+  // Code got a bit complex because of part two, could probably be optimized.
+  // Commit for part one was pretty enough
   private static final Logger LOGGER = LoggerFactory.getLogger(DaySix.class);
 
   public static void solve() {
-
     char[][] labAsMatrix = FileParser.toMatrix("src/main/resources/DaySix/input.txt");
     boolean[][] visitedMatrix = new boolean[labAsMatrix.length][labAsMatrix.length];
 
@@ -20,10 +24,13 @@ public class DaySix {
 
     while (guard != null) {
       visitedMatrix[guard.getPosition().x()][guard.getPosition().y()] = true;
-      guard = moveGuard(labAsMatrix, guard);
+      guard = moveGuard(labAsMatrix, guard, new HashMap<>());
     }
+    List<Coordinate> obstaclesThatResultInLoop =
+        getObstaclesThatResultInLoop(labAsMatrix, guardsStartingPosition, guardsStartingDirection);
 
     LOGGER.info("Part one: {}", getVisitedMatrixCount(visitedMatrix));
+    LOGGER.info("Coordinates that result in loop: {}", obstaclesThatResultInLoop.size());
   }
 
   public static Coordinate getGuardsStartingPosition(char[][] matrix) {
@@ -37,7 +44,8 @@ public class DaySix {
     throw new RuntimeException("Guard was not found on matrix");
   }
 
-  public static Guard moveGuard(char[][] matrix, Guard guard) {
+  public static Guard moveGuard(
+      char[][] matrix, Guard guard, HashMap<Coordinate, Integer> collissionsWithObstacles) {
     Coordinate currentPosition = guard.getPosition();
     int deltaX = guard.getDirection().getDeltaX();
     int deltaY = guard.getDirection().getDeltaY();
@@ -46,7 +54,6 @@ public class DaySix {
     Coordinate nextGuardPosition =
         new Coordinate(currentPosition.x() + deltaX, currentPosition.y() + deltaY);
     if (!positionExistsInMatrix(matrix, nextGuardPosition)) {
-      LOGGER.info("Guard exited matrix at position {}", nextGuardPosition);
       return null;
     }
 
@@ -58,13 +65,16 @@ public class DaySix {
 
     // If obstacle, return guard with same position, updated direction
     guard.changeDirectionClockwise();
+    // Keep track of obstacle collisions (for part two)
+    int colissions = collissionsWithObstacles.getOrDefault(nextGuardPosition, 0);
+    collissionsWithObstacles.put(nextGuardPosition, colissions + 1);
     return guard;
   }
 
   public static boolean positionExistsInMatrix(char[][] matrix, Coordinate position) {
     return position.x() >= 0
         && position.y() >= 0
-        && position.x() < matrix[0].length
+        && position.x() < matrix.length
         && position.y() < matrix.length;
   }
 
@@ -78,5 +88,31 @@ public class DaySix {
       }
     }
     return visitedCounter;
+  }
+
+  public static List<Coordinate> getObstaclesThatResultInLoop(
+      char[][] matrix, Coordinate guardStartingPosition, Direction guardStartingDirection) {
+    Guard guardForThisTimeline = new Guard(guardStartingPosition, guardStartingDirection);
+    List<Coordinate> loops = new ArrayList<>();
+    // Get guard, check movement in matrix replacing values with '#', if loop add to list
+    for (int i = 0; i < matrix.length; i++) {
+      for (int j = 0; j < matrix.length; j++) {
+        HashMap<Coordinate, Integer> collissionsWithObstacles = new HashMap<>();
+        char originalValue = matrix[i][j];
+        matrix[i][j] = '#';
+        while (guardForThisTimeline != null) {
+          guardForThisTimeline = moveGuard(matrix, guardForThisTimeline, collissionsWithObstacles);
+          if (collissionsWithObstacles.values().stream().filter(value -> value > 2).toList().size()
+              >= 4) {
+            loops.add(new Coordinate(j, i));
+            break;
+          }
+        }
+
+        matrix[i][j] = originalValue;
+        guardForThisTimeline = new Guard(guardStartingPosition, guardStartingDirection);
+      }
+    }
+    return loops;
   }
 }
