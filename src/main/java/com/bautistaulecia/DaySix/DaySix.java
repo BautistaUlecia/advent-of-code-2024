@@ -4,14 +4,15 @@ import com.bautistaulecia.Util.Coordinate;
 import com.bautistaulecia.Util.Direction;
 import com.bautistaulecia.Util.FileParser;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DaySix {
-  // Code got a bit complex because of part two, could probably be optimized.
-  // Commit for part one was pretty enough
+  // Part two can be optimized by only checking for course in original path
+  // But this runs fast enough
   private static final Logger LOGGER = LoggerFactory.getLogger(DaySix.class);
 
   public static void solve() {
@@ -24,13 +25,13 @@ public class DaySix {
 
     while (guard != null) {
       visitedMatrix[guard.getPosition().x()][guard.getPosition().y()] = true;
-      guard = moveGuard(labAsMatrix, guard, new HashMap<>());
+      guard = moveGuard(labAsMatrix, guard);
     }
     List<Coordinate> obstaclesThatResultInLoop =
         getObstaclesThatResultInLoop(labAsMatrix, guardsStartingPosition, guardsStartingDirection);
 
     LOGGER.info("Part one: {}", getVisitedMatrixCount(visitedMatrix));
-    LOGGER.info("Coordinates that result in loop: {}", obstaclesThatResultInLoop.size());
+    LOGGER.info("Part two: {}", obstaclesThatResultInLoop.size());
   }
 
   public static Coordinate getGuardsStartingPosition(char[][] matrix) {
@@ -44,8 +45,7 @@ public class DaySix {
     throw new RuntimeException("Guard was not found on matrix");
   }
 
-  public static Guard moveGuard(
-      char[][] matrix, Guard guard, HashMap<Coordinate, Integer> collissionsWithObstacles) {
+  public static Guard moveGuard(char[][] matrix, Guard guard) {
     Coordinate currentPosition = guard.getPosition();
     int deltaX = guard.getDirection().getDeltaX();
     int deltaY = guard.getDirection().getDeltaY();
@@ -65,9 +65,6 @@ public class DaySix {
 
     // If obstacle, return guard with same position, updated direction
     guard.changeDirectionClockwise();
-    // Keep track of obstacle collisions (for part two)
-    int colissions = collissionsWithObstacles.getOrDefault(nextGuardPosition, 0);
-    collissionsWithObstacles.put(nextGuardPosition, colissions + 1);
     return guard;
   }
 
@@ -91,22 +88,30 @@ public class DaySix {
   }
 
   public static List<Coordinate> getObstaclesThatResultInLoop(
+      // Get guard, check movement in matrix replacing values with '#' and tracking
+      // State (a state is position + direction). If a state is ever reached twice,
+      // The guard is in a loop.
+      // State could be a separate class but will use string for simplicity
+
       char[][] matrix, Coordinate guardStartingPosition, Direction guardStartingDirection) {
     Guard guardForThisTimeline = new Guard(guardStartingPosition, guardStartingDirection);
     List<Coordinate> loops = new ArrayList<>();
-    // Get guard, check movement in matrix replacing values with '#', if loop add to list
+    // Could only check squares in original path if efficiency was an issue
     for (int i = 0; i < matrix.length; i++) {
       for (int j = 0; j < matrix.length; j++) {
-        HashMap<Coordinate, Integer> collissionsWithObstacles = new HashMap<>();
+        Set<String> seenStates = new HashSet<>();
         char originalValue = matrix[i][j];
         matrix[i][j] = '#';
+
         while (guardForThisTimeline != null) {
-          guardForThisTimeline = moveGuard(matrix, guardForThisTimeline, collissionsWithObstacles);
-          if (collissionsWithObstacles.values().stream().filter(value -> value > 2).toList().size()
-              >= 4) {
+          String state =
+              guardForThisTimeline.getPosition() + " " + guardForThisTimeline.getDirection();
+          if (seenStates.contains(state)) {
             loops.add(new Coordinate(j, i));
             break;
           }
+          seenStates.add(state);
+          guardForThisTimeline = moveGuard(matrix, guardForThisTimeline);
         }
 
         matrix[i][j] = originalValue;
