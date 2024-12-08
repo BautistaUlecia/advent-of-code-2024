@@ -11,8 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DaySix {
-  // Part two can be optimized by only checking for course in original path
-  // But this runs fast enough
   private static final Logger LOGGER = LoggerFactory.getLogger(DaySix.class);
 
   public static void solve() {
