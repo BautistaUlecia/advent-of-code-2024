@@ -1,5 +1,6 @@
 package com.bautistaulecia.DayFour;
 
+import com.bautistaulecia.Util.Coordinate;
 import com.bautistaulecia.Util.FileParser;
 import java.util.ArrayList;
 import java.util.HashSet;

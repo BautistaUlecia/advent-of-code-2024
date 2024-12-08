@@ -1,5 +1,7 @@
 package com.bautistaulecia.DayFour;
 
+import com.bautistaulecia.Util.Coordinate;
+
 // I'm sure there is a Vector class that could do this but since its bidirectional and I don't want
 // To make the gods of math angry, ill just implement it myself
 public class Line {

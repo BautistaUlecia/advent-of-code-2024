@@ -1,6 +1,6 @@
 package com.bautistaulecia;
 
-import com.bautistaulecia.DayFive.DayFive;
+import com.bautistaulecia.DaySix.DaySix;
 
 public class App {
   public static void main(String[] args) {
@@ -8,6 +8,7 @@ public class App {
     // DayTwo.solve();
     // DayThree.solve();
     // DayFour.solve();
-    DayFive.solve();
+    // DayFive.solve();
+    DaySix.solve();
   }
 }
