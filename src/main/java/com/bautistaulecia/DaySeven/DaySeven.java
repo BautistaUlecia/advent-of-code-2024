@@ -22,12 +22,11 @@ public class DaySeven {
           Arrays.stream(parts[1].trim().split(" ")).map(Long::valueOf).toList();
       targetResultToNumbersMap.put(resultAsLong, numbersAsLong);
     }
-    Long result = canResultBeCalculatedFromOperations(targetResultToNumbersMap);
+    Long result = sumTargetsThatCanBeReached(targetResultToNumbersMap);
     LOGGER.info("Result = {}", result);
   }
 
-  public static Long canResultBeCalculatedFromOperations(
-      Map<Long, List<Long>> targetResultToNumbersMap) {
+  public static Long sumTargetsThatCanBeReached(Map<Long, List<Long>> targetResultToNumbersMap) {
     Long totalSum = 0L;
     List<Character> operators = new ArrayList<>();
     operators.add('*');
