@@ -22,7 +22,7 @@ public class FileParser {
     }
   }
 
-  public static char[][] toMatrix(String path) {
+  public static char[][] toSquareMatrix(String path) {
     try {
       List<String> lines = Files.readAllLines(Paths.get(path));
       int size = lines.size(); // Matrix is square

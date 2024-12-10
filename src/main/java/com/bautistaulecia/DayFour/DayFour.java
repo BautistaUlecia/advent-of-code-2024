@@ -15,7 +15,7 @@ public class DayFour {
 
   public static void solve() {
     int counter = 0;
-    char[][] inputAsMatrix = FileParser.toMatrix("src/main/resources/DayFour/input.txt");
+    char[][] inputAsMatrix = FileParser.toSquareMatrix("src/main/resources/DayFour/input.txt");
     for (int i = 0; i < inputAsMatrix.length; i++) {
       for (int j = 0; j < inputAsMatrix.length; j++) {
         counter += searchInAllValidLines(new Coordinate(i, j), inputAsMatrix);

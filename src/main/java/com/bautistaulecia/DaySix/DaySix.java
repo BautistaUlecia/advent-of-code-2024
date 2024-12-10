@@ -14,7 +14,7 @@ public class DaySix {
   private static final Logger LOGGER = LoggerFactory.getLogger(DaySix.class);
 
   public static void solve() {
-    char[][] labAsMatrix = FileParser.toMatrix("src/main/resources/DaySix/input.txt");
+    char[][] labAsMatrix = FileParser.toSquareMatrix("src/main/resources/DaySix/input.txt");
     boolean[][] visitedMatrix = new boolean[labAsMatrix.length][labAsMatrix.length];
 
     Coordinate guardsStartingPosition = getGuardsStartingPosition(labAsMatrix);
