@@ -16,7 +16,6 @@ public class DayEight {
 
   public static void solve() {
     char[][] matrix = FileParser.toSquareMatrix("src/main/resources/DayEight/input.txt");
-
     Map<Character, List<Coordinate>> antennasGroupedByLetter = findAndGroupAntennas(matrix);
     int result = countAntinodesInBounds(antennasGroupedByLetter, matrix);
     LOGGER.info("Result = {}", result);
@@ -36,32 +35,45 @@ public class DayEight {
 
   public static int countAntinodesInBounds(
       Map<Character, List<Coordinate>> antennasGroupedByLetter, char[][] matrix) {
-    Set<Coordinate> antinodes = new HashSet<>() {};
+    Set<Coordinate> antinodesForPartOne = new HashSet<>();
+    Set<Coordinate> antinodesForPartTwo = new HashSet<>();
     for (Map.Entry<Character, List<Coordinate>> entry : antennasGroupedByLetter.entrySet()) {
       List<Coordinate> coordinates = entry.getValue();
       for (int i = 0; i < coordinates.size() - 1; i++) {
         for (int j = i + 1; j < coordinates.size(); j++) {
-          Integer deltaX = coordinates.get(j).x() - coordinates.get(i).x();
-          Integer deltaY = coordinates.get(j).y() - coordinates.get(i).y();
+          Coordinate firstAntenna = coordinates.get(i);
+          Coordinate secondAntenna = coordinates.get(j);
+          Integer deltaX = secondAntenna.x() - firstAntenna.x();
+          Integer deltaY = secondAntenna.y() - firstAntenna.y();
 
-          // A - delta
-          Coordinate firstAntinode =
-              new Coordinate(coordinates.get(i).x() - deltaX, coordinates.get(i).y() - deltaY);
+          // first - delta
+          addIfValidAntinode(
+              antinodesForPartOne,
+              matrix,
+              new Coordinate(firstAntenna.x() - deltaX, firstAntenna.y() - deltaY));
 
-          // B + delta
-          Coordinate secondAntinode =
-              new Coordinate(coordinates.get(j).x() + deltaX, coordinates.get(j).y() + deltaY);
+          // second + delta
+          addIfValidAntinode(
+              antinodesForPartOne,
+              matrix,
+              new Coordinate(secondAntenna.x() + deltaX, secondAntenna.y() + deltaY));
 
-          if (isWithinBounds(firstAntinode, matrix)) {
-            antinodes.add(firstAntinode);
-          }
-          if (isWithinBounds(secondAntinode, matrix)) {
-            antinodes.add(secondAntinode);
-          }
+          antinodesForPartTwo.addAll(
+              findAllAntinodesForPartTwo(matrix, firstAntenna, secondAntenna, deltaX, deltaY));
         }
       }
     }
-    return antinodes.size();
+    // return antinodesForPartOne.size(); // Part one
+    return antinodesForPartTwo.size();
+  }
+
+  private static boolean addIfValidAntinode(
+      Set<Coordinate> antinodes, char[][] matrix, Coordinate antinode) {
+    if (isWithinBounds(antinode, matrix)) {
+      antinodes.add(antinode);
+      return true;
+    }
+    return false;
   }
 
   public static boolean isWithinBounds(Coordinate coordinate, char[][] matrix) {
@@ -69,5 +81,32 @@ public class DayEight {
         && coordinate.y() >= 0
         && coordinate.x() < matrix.length
         && coordinate.y() < matrix.length;
+  }
+
+  public static Set<Coordinate> findAllAntinodesForPartTwo(
+      char[][] matrix,
+      Coordinate first,
+      Coordinate second,
+      Integer originalDeltaX,
+      Integer originalDeltaY) {
+    Set<Coordinate> result = new HashSet<>();
+    Integer deltaX = originalDeltaX;
+    Integer deltaY = originalDeltaY;
+
+    while (addIfValidAntinode(
+        result, matrix, new Coordinate(first.x() + deltaX, first.y() + deltaY))) {
+      deltaX += originalDeltaX;
+      deltaY += originalDeltaY;
+    }
+
+    deltaX = originalDeltaX;
+    deltaY = originalDeltaY;
+
+    while (addIfValidAntinode(
+        result, matrix, new Coordinate(second.x() - deltaX, second.y() - deltaY))) {
+      deltaX += originalDeltaX;
+      deltaY += originalDeltaY;
+    }
+    return result;
   }
 }
