@@ -58,6 +58,7 @@ public class DayEight {
               matrix,
               new Coordinate(secondAntenna.x() + deltaX, secondAntenna.y() + deltaY));
 
+          // Part two (add all valid coordinates in added antinode + delta)
           antinodesForPartTwo.addAll(
               findAllAntinodesForPartTwo(matrix, firstAntenna, secondAntenna, deltaX, deltaY));
         }
