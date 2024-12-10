@@ -1,6 +1,6 @@
 package com.bautistaulecia;
 
-import com.bautistaulecia.DayEight.DayEight;
+import com.bautistaulecia.DayNine.DayNine;
 
 public class App {
   public static void main(String[] args) {
@@ -11,12 +11,7 @@ public class App {
     // DayFive.solve();
     // DaySix.solve();
     // DaySeven.solve();
-    long startTime = System.nanoTime();
-    DayEight.solve();
-    long endTime = System.nanoTime();
-
-    long duration = endTime - startTime;
-    int durationInMillis = (int) (duration / 1_000_000);
-    System.out.println("Execution time: " + durationInMillis + " ms");
+    // DayEight.solve();
+    DayNine.solve();
   }
 }
