@@ -77,8 +77,6 @@ public class DayNine {
 
     // If swapped, update spaces list to reflect new occupied space and add number's ID to "moved"
     // set.
-    // This runs very fast because I only have to iterate the list twice, once for spaces and once
-    // for moving.
 
     Set<String> moved = new HashSet<>();
     String[] expandedInputAsArray = expandedInput.toArray(new String[0]);
