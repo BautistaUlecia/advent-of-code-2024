@@ -4,10 +4,8 @@ import com.bautistaulecia.Util.FileParser;
 import com.bautistaulecia.Util.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,13 +70,9 @@ public class DayNine {
 
   public static List<String> swapNumberBlocksAndDotBlocks(List<String> expandedInput) {
     // First, add all index of empty spaces to a list. Then get number block, find first space that
-    // can fit it (it should be big enough, and be located before the number block), and
-    // if number has not been moved yet, swap.
+    // can fit it (it should be big enough, and be located before the number block).
+    // If swapped, update spaces list to reflect new occupied space.
 
-    // If swapped, update spaces list to reflect new occupied space and add number's ID to "moved"
-    // set.
-
-    Set<String> moved = new HashSet<>();
     String[] expandedInputAsArray = expandedInput.toArray(new String[0]);
     List<Pair<Integer, Integer>> freeSpaces = getFreeSpaces(expandedInputAsArray);
     int right = expandedInputAsArray.length - 1;
@@ -106,15 +100,12 @@ public class DayNine {
               .filter(pair -> ((pair.second() - pair.first() + 1) >= (fileSize)))
               .findFirst();
 
-      // There is a free space of size n, it's before the number and the number has not moved yet
-      if (possibleFreeSpace.isPresent()
-          && (!moved.contains(expandedInputAsArray[numberBlock.first()])
-              && numberBlock.first() > possibleFreeSpace.get().first())) {
+      // There is a free space of size n and it's before the number.
+      if (possibleFreeSpace.isPresent() && numberBlock.first() > possibleFreeSpace.get().first()) {
 
-        // Swap and add number to moved
+        // Swap
         Pair<Integer, Integer> freeSpace = possibleFreeSpace.get();
         swapBlocks(expandedInputAsArray, freeSpace, numberBlock);
-        moved.add(expandedInputAsArray[numberBlock.first()]);
 
         // Update list
         int newStart = freeSpace.first() + fileSize;
