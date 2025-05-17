@@ -41,7 +41,7 @@ public class DayTen {
       if (matrix[p.first()][p.second()] == '9') {
         counter += 1;
       }
-      visited[p.first()][p.second()] = true;
+      //visited[p.first()][p.second()] = true; Uncomment for part 1!
       Pair<Integer, Integer> left = new Pair<>(p.first() - 1, p.second());
       Pair<Integer, Integer> right = new Pair<>(p.first() + 1, p.second());
       Pair<Integer, Integer> down = new Pair<>(p.first(), p.second() + 1);
