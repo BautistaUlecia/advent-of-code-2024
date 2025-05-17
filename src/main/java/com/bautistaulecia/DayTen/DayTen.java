@@ -24,13 +24,6 @@ public class DayTen {
     LOGGER.info("Total score = {}", totalScore);
   }
 
-  public static Boolean isWithinBounds(int size, Pair<Integer, Integer> position) {
-    return position.first() >= 0
-        && position.second() >= 0
-        && position.first() < size
-        && position.second() < size;
-  }
-
   public static int dfs(char[][] matrix, Pair<Integer, Integer> foundZero) {
     Stack<Pair<Integer, Integer>> stack = new Stack<>();
     boolean[][] visited = new boolean[matrix.length][matrix.length];
@@ -41,7 +34,7 @@ public class DayTen {
       if (matrix[p.first()][p.second()] == '9') {
         counter += 1;
       }
-      //visited[p.first()][p.second()] = true; Uncomment for part 1!
+      // visited[p.first()][p.second()] = true; Uncomment for part 1!
       Pair<Integer, Integer> left = new Pair<>(p.first() - 1, p.second());
       Pair<Integer, Integer> right = new Pair<>(p.first() + 1, p.second());
       Pair<Integer, Integer> down = new Pair<>(p.first(), p.second() + 1);
@@ -73,5 +66,12 @@ public class DayTen {
                 - (int) matrix[current.first()][current.second()]
             == 1
         && !visited[next.first()][next.second()];
+  }
+
+  public static Boolean isWithinBounds(int size, Pair<Integer, Integer> position) {
+    return position.first() >= 0
+        && position.second() >= 0
+        && position.first() < size
+        && position.second() < size;
   }
 }
