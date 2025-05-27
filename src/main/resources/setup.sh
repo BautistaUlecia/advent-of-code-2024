@@ -17,8 +17,14 @@ JAVA_FILE="$JAVA_SRC_PATH/$DAY_NAME.java"
 cat <<EOF > "$JAVA_FILE"
 package com.bautistaulecia.$DAY_NAME;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class $DAY_NAME {
+    private static final Logger LOGGER = LoggerFactory.getLogger($DAY_NAME.class);
+    public static void solve() {}
 }
 EOF
+
 
 echo "Created $DAY_NAME with test.txt and $DAY_NAME.java"
